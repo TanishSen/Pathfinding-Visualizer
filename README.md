@@ -2,7 +2,7 @@
 
 A modern, interactive web application that helps users visualize and understand how different pathfinding algorithms work on a grid. Built as an educational tool for students, developers, and algorithm enthusiasts.
 
-![Pathfinding Visualizer](https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=800&h=400&fit=crop)
+<img width="933" height="580" alt="Screenshot 2025-07-16 at 8 09 13 PM" src="https://github.com/user-attachments/assets/eae520ad-e4f1-4f99-8ff3-aed6fd22ae8b" />
 
 ## ✨ Features
 
@@ -13,6 +13,9 @@ A modern, interactive web application that helps users visualize and understand 
 - **Real-time grid manipulation** during algorithm setup
 
 ### 🔍 Algorithm Support
+<img width="634" height="207" alt="Screenshot 2025-07-16 at 8 14 39 PM" src="https://github.com/user-attachments/assets/426c6b8e-92e7-4ad1-9a0e-1e60255e5b70" />
+
+
 - **BFS (Breadth-First Search)** - Guarantees shortest path in unweighted graphs
 - **DFS (Depth-First Search)** - Explores depth-first, good for maze solving
 - **Dijkstra's Algorithm** - Optimal for weighted graphs with non-negative weights  

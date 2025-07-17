@@ -171,7 +171,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Inspired by Clément Mihailescu's pathfinding visualizer
 - Built with modern web technologies for educational purposes
 - Special thanks to the open-source community
-
----
-
-**Built with ❤️ for education and learning**

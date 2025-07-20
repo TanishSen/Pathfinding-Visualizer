@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * REST Controller for pathfinding operations.
  * 
@@ -57,33 +54,5 @@ public class PathfindingController {
     @GetMapping("/health")
     public ResponseEntity<String> healthCheck() {
         return ResponseEntity.ok("🟢 Pathfinding API is healthy and ready!");
-    }
-
-    /**
-     * Root endpoint - provides API information and available endpoints.
-     */
-    @GetMapping("/")
-    public ResponseEntity<Map<String, Object>> getApiInfo() {
-        Map<String, Object> apiInfo = new HashMap<>();
-        apiInfo.put("service", "Pathfinding Visualizer API");
-        apiInfo.put("version", "1.0.0");
-        apiInfo.put("status", "🟢 Running");
-        
-        Map<String, String> endpoints = new HashMap<>();
-        endpoints.put("POST /api/pathfind", "Execute pathfinding algorithm");
-        endpoints.put("GET /api/health", "Health check");
-        endpoints.put("GET /api/", "API information");
-        
-        apiInfo.put("endpoints", endpoints);
-        
-        Map<String, String> algorithms = new HashMap<>();
-        algorithms.put("BFS", "Breadth-First Search");
-        algorithms.put("DFS", "Depth-First Search");
-        algorithms.put("DIJKSTRA", "Dijkstra's Algorithm");
-        algorithms.put("A_STAR", "A* Search Algorithm");
-        
-        apiInfo.put("supportedAlgorithms", algorithms);
-        
-        return ResponseEntity.ok(apiInfo);
     }
 }

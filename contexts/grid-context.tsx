@@ -21,7 +21,6 @@ export interface GridContextType {
   endPoint: { row: number; col: number } | null
   selectedAlgorithm: Algorithm
   isVisualizing: boolean
-  animationSpeed: number
   drawingMode: "wall" | "start" | "end"
 
   // Actions
@@ -31,10 +30,10 @@ export interface GridContextType {
   setEndPoint: (row: number, col: number) => void
   setSelectedAlgorithm: (algorithm: Algorithm) => void
   setIsVisualizing: (isVisualizing: boolean) => void
-  setAnimationSpeed: (speed: number) => void
   setDrawingMode: (mode: "wall" | "start" | "end") => void
   clearGrid: () => void
   clearPath: () => void
+  clearWallsAndWeights: () => void // New function to clear walls and weights
   generateMaze: () => void
   visualizeAlgorithm: () => Promise<void>
 }
@@ -48,9 +47,8 @@ export function GridProvider({ children }: { children: React.ReactNode }) {
   const [grid, setGrid] = useState<Cell[][]>([])
   const [startPoint, setStartPointState] = useState<{ row: number; col: number } | null>({ row: 12, col: 10 })
   const [endPoint, setEndPointState] = useState<{ row: number; col: number } | null>({ row: 12, col: 40 })
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState<Algorithm>("bfs")
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState<Algorithm>("dijkstra")
   const [isVisualizing, setIsVisualizing] = useState(false)
-  const [animationSpeed, setAnimationSpeed] = useState(50)
   const [drawingMode, setDrawingMode] = useState<"wall" | "start" | "end">("wall")
 
   // Initialize grid with default start and end points
@@ -128,12 +126,32 @@ export function GridProvider({ children }: { children: React.ReactNode }) {
     })
   }, [])
 
+  // This function now ONLY clears visited, path, and current nodes. Walls are preserved.
   const clearPath = useCallback(() => {
     setGrid((prevGrid) => {
       return prevGrid.map((row) =>
         row.map((cell) => ({
           ...cell,
           type: cell.type === "visited" || cell.type === "path" || cell.type === "current" ? "empty" : cell.type,
+          distance: Number.POSITIVE_INFINITY,
+          heuristic: 0,
+          parent: null,
+          isAnimated: false,
+        })),
+      )
+    })
+  }, [])
+
+  // New function to clear walls, visited, path, and current nodes.
+  const clearWallsAndWeights = useCallback(() => {
+    setGrid((prevGrid) => {
+      return prevGrid.map((row) =>
+        row.map((cell) => ({
+          ...cell,
+          type:
+            cell.type === "visited" || cell.type === "path" || cell.type === "current" || cell.type === "wall"
+              ? "empty"
+              : cell.type,
           distance: Number.POSITIVE_INFINITY,
           heuristic: 0,
           parent: null,
@@ -240,7 +258,7 @@ export function GridProvider({ children }: { children: React.ReactNode }) {
     if (!startPoint || !endPoint || isVisualizing) return
 
     setIsVisualizing(true)
-    clearPath()
+    clearPath() // This now only clears previous visualization, not walls
 
     // Wait for clear to complete
     await new Promise((resolve) => setTimeout(resolve, 100))
@@ -269,18 +287,16 @@ export function GridProvider({ children }: { children: React.ReactNode }) {
       for (let i = 0; i < result.visitedNodes.length; i++) {
         const { row, col } = result.visitedNodes[i]
 
-        setTimeout(
-          () => {
-            setGrid((prevGrid) => {
-              const newGrid = prevGrid.map((gridRow) => [...gridRow])
-              if (newGrid[row][col].type === "empty") {
-                newGrid[row][col] = { ...newGrid[row][col], type: "visited", isAnimated: true }
-              }
-              return newGrid
-            })
-          },
-          i * (101 - animationSpeed),
-        )
+        setTimeout(() => {
+          setGrid((prevGrid) => {
+            const newGrid = prevGrid.map((gridRow) => [...gridRow])
+            // Only update if it's not a start or end node
+            if (newGrid[row][col].type !== "start" && newGrid[row][col].type !== "end") {
+              newGrid[row][col] = { ...newGrid[row][col], type: "visited", isAnimated: true }
+            }
+            return newGrid
+          })
+        }, i * 50)
       }
 
       // Animate final path
@@ -290,7 +306,8 @@ export function GridProvider({ children }: { children: React.ReactNode }) {
             setTimeout(() => {
               setGrid((prevGrid) => {
                 const newGrid = prevGrid.map((gridRow) => [...gridRow])
-                if (newGrid[node.row][node.col].type === "visited") {
+                // Only update if it's not a start or end node
+                if (newGrid[node.row][node.col].type !== "start" && newGrid[node.row][node.col].type !== "end") {
                   newGrid[node.row][node.col] = { ...newGrid[node.row][node.col], type: "path" }
                 }
                 return newGrid
@@ -298,7 +315,7 @@ export function GridProvider({ children }: { children: React.ReactNode }) {
             }, index * 50)
           })
         },
-        result.visitedNodes.length * (101 - animationSpeed) + 500,
+        result.visitedNodes.length * 50 + 500,
       )
     } catch (error) {
       console.error("Error visualizing algorithm:", error)
@@ -310,9 +327,9 @@ export function GridProvider({ children }: { children: React.ReactNode }) {
       () => {
         setIsVisualizing(false)
       },
-      (result?.visitedNodes?.length || 0) * (101 - animationSpeed) + (result?.path?.length || 0) * 50 + 1000,
+      (result?.visitedNodes?.length || 0) * 50 + (result?.path?.length || 0) * 50 + 1000,
     )
-  }, [startPoint, endPoint, isVisualizing, grid, selectedAlgorithm, animationSpeed, clearPath])
+  }, [startPoint, endPoint, isVisualizing, grid, selectedAlgorithm, clearPath])
 
   // Client-side fallback implementation
   const visualizeClientSide = useCallback(async () => {
@@ -374,18 +391,15 @@ export function GridProvider({ children }: { children: React.ReactNode }) {
     for (let i = 0; i < visitedNodes.length; i++) {
       const { row, col } = visitedNodes[i]
 
-      setTimeout(
-        () => {
-          setGrid((prevGrid) => {
-            const newGrid = prevGrid.map((gridRow) => [...gridRow])
-            if (newGrid[row][col].type === "empty") {
-              newGrid[row][col] = { ...newGrid[row][col], type: "visited", isAnimated: true }
-            }
-            return newGrid
-          })
-        },
-        i * (101 - animationSpeed),
-      )
+      setTimeout(() => {
+        setGrid((prevGrid) => {
+          const newGrid = prevGrid.map((gridRow) => [...gridRow])
+          if (newGrid[row][col].type === "empty") {
+            newGrid[row][col] = { ...newGrid[row][col], type: "visited", isAnimated: true }
+          }
+          return newGrid
+        })
+      }, i * 50)
     }
 
     // Animate path
@@ -407,9 +421,9 @@ export function GridProvider({ children }: { children: React.ReactNode }) {
           }, index * 50)
         })
       },
-      visitedNodes.length * (101 - animationSpeed) + 500,
+      visitedNodes.length * 50 + 500,
     )
-  }, [startPoint, endPoint, grid, animationSpeed])
+  }, [startPoint, endPoint, grid])
 
   const value: GridContextType = {
     grid,
@@ -417,7 +431,6 @@ export function GridProvider({ children }: { children: React.ReactNode }) {
     endPoint,
     selectedAlgorithm,
     isVisualizing,
-    animationSpeed,
     drawingMode,
     initializeGrid,
     updateCell,
@@ -425,10 +438,10 @@ export function GridProvider({ children }: { children: React.ReactNode }) {
     setEndPoint,
     setSelectedAlgorithm,
     setIsVisualizing,
-    setAnimationSpeed,
     setDrawingMode,
     clearGrid,
     clearPath,
+    clearWallsAndWeights, // Expose the new function
     generateMaze,
     visualizeAlgorithm,
   }

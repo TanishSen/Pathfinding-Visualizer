@@ -9,25 +9,26 @@ export function Grid() {
   if (!grid.length) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="text-gray-500">Loading grid...</div>
+        <div className="text-gray-400">Loading grid...</div>
       </div>
     )
   }
 
   return (
-    <div className="overflow-auto">
-      <div
-        className="grid gap-0 mx-auto"
-        style={{
-          gridTemplateColumns: `repeat(${grid[0]?.length || 50}, minmax(0, 1fr))`,
-          maxWidth: "fit-content",
-        }}
-      >
-        {grid.map((row, rowIndex) =>
-          row.map((cell, colIndex) => (
-            <Cell key={`${rowIndex}-${colIndex}`} cell={cell} row={rowIndex} col={colIndex} />
-          )),
-        )}
+    <div className="flex justify-center">
+      <div className="inline-block border-2 border-gray-600 bg-gray-800 p-2 rounded">
+        <div
+          className="grid gap-0"
+          style={{
+            gridTemplateColumns: `repeat(${grid[0]?.length || 50}, 20px)`,
+          }}
+        >
+          {grid.map((row, rowIndex) =>
+            row.map((cell, colIndex) => (
+              <Cell key={`${rowIndex}-${colIndex}`} cell={cell} row={rowIndex} col={colIndex} />
+            )),
+          )}
+        </div>
       </div>
     </div>
   )

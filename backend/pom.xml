@@ -15,7 +15,7 @@
     <groupId>com.pathfinding</groupId>
     <artifactId>pathfinding-visualizer-backend</artifactId>
     <version>1.0.0</version>
-    <name>Pathfinding Visualizer Backend</name>
+        <name>Pathfinding Visualizer Backend</name>
     <description>Spring Boot backend for Pathfinding Visualizer application</description>
     
     <properties>

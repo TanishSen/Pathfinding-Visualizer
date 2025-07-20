@@ -163,8 +163,7 @@ public class PathfindingService {
         List<Coordinate> visitedNodes = new ArrayList<>();
         PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingInt(Node::getDistance));
         Map<String, Integer> distances = new HashMap<>();
-        Map<String, Node> previous = new HashMap<>();
-        Set<String> visited = new HashSet<>();
+        Set<String> visited = new HashSet<>(); // To mark nodes whose shortest path is finalized
         
         // Initialize distances
         for (int i = 0; i < rows; i++) {
@@ -183,14 +182,20 @@ public class PathfindingService {
             Node current = pq.poll();
             String currentKey = current.getRow() + "," + current.getCol();
             
-            if (visited.contains(currentKey)) continue;
+            // If we've already finalized the shortest path to this node, skip it
+            if (visited.contains(currentKey)) {
+                continue;
+            }
             
             visited.add(currentKey);
             visitedNodes.add(new Coordinate(current.getRow(), current.getCol()));
             
             // Check if we reached the destination
             if (current.getRow() == end.getRow() && current.getCol() == end.getCol()) {
-                List<Coordinate> path = reconstructPathFromMap(previous, current);
+                // Path reconstruction using the 'parent' field of the Node
+                List<Coordinate> path = reconstructPath(current);
+                System.out.println("Dijkstra Result: Visited Nodes Count = " + visitedNodes.size() + ", Path Length = " + path.size() + ", Success = " + true);
+                System.out.println("Dijkstra Path: " + path);
                 return new PathfindingResponse(visitedNodes, path, true, "Path found using Dijkstra");
             }
             
@@ -200,19 +205,21 @@ public class PathfindingService {
                 int newCol = current.getCol() + direction[1];
                 String neighborKey = newRow + "," + newCol;
                 
-                if (isValidMove(grid, newRow, newCol, rows, cols) && !visited.contains(neighborKey)) {
-                    int newDistance = current.getDistance() + 1;
-                    Integer currentDistance = distances.get(neighborKey);
+                // Only consider valid moves (within bounds and not a wall)
+                if (isValidMove(grid, newRow, newCol, rows, cols)) {
+                    int newDistance = current.getDistance() + 1; // Assuming unit weight
+                    Integer currentDistanceToNeighbor = distances.get(neighborKey);
                     
-                    if (currentDistance != null && newDistance < currentDistance) {
+                    // If a shorter path to the neighbor is found
+                    if (currentDistanceToNeighbor != null && newDistance < currentDistanceToNeighbor) {
                         distances.put(neighborKey, newDistance);
-                        previous.put(neighborKey, current);
+                        // The parent is set when the new Node is created and offered to the PQ
                         pq.offer(new Node(newRow, newCol, newDistance, current));
                     }
                 }
             }
         }
-        
+        System.out.println("Dijkstra Result: No path found. Visited Nodes Count = " + visitedNodes.size());
         return new PathfindingResponse(visitedNodes, new ArrayList<>(), false, "No path found using Dijkstra");
     }
 
@@ -301,6 +308,7 @@ public class PathfindingService {
 
     /**
      * Reconstruct path from end node to start using parent pointers.
+     * Used by BFS, DFS, A* where Node objects directly store parent.
      */
     private List<Coordinate> reconstructPath(Node endNode) {
         List<Coordinate> path = new ArrayList<>();
@@ -309,22 +317,6 @@ public class PathfindingService {
         while (current != null) {
             path.add(0, new Coordinate(current.getRow(), current.getCol()));
             current = current.getParent();
-        }
-        
-        return path;
-    }
-
-    /**
-     * Reconstruct path using previous node map (for Dijkstra).
-     */
-    private List<Coordinate> reconstructPathFromMap(Map<String, Node> previous, Node endNode) {
-        List<Coordinate> path = new ArrayList<>();
-        Node current = endNode;
-        
-        while (current != null) {
-            path.add(0, new Coordinate(current.getRow(), current.getCol()));
-            String key = current.getRow() + "," + current.getCol();
-            current = previous.get(key);
         }
         
         return path;

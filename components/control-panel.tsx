@@ -3,9 +3,6 @@
 import { useGrid } from "@/contexts/grid-context"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Slider } from "@/components/ui/slider"
-import { Badge } from "@/components/ui/badge"
-import { Play, Square, Trash2, Shuffle, MousePointer, Navigation, Target } from "lucide-react"
 
 export function ControlPanel() {
   const {
@@ -14,126 +11,84 @@ export function ControlPanel() {
     isVisualizing,
     animationSpeed,
     setAnimationSpeed,
-    drawingMode,
-    setDrawingMode,
     clearGrid,
-    clearPath,
+    clearWallsAndWeights, // Use the new function here
     generateMaze,
     visualizeAlgorithm,
   } = useGrid()
 
   const algorithms = [
-    { value: "bfs", label: "Breadth-First Search (BFS)" },
-    { value: "dfs", label: "Depth-First Search (DFS)" },
     { value: "dijkstra", label: "Dijkstra's Algorithm" },
     { value: "astar", label: "A* Search" },
+    { value: "bfs", label: "Breadth-first Search" },
+    { value: "dfs", label: "Depth-first Search" },
   ]
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold mb-3 text-gray-800">Algorithm Selection</h3>
-        <Select value={selectedAlgorithm} onValueChange={(value) => setSelectedAlgorithm(value as any)}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select an algorithm" />
-          </SelectTrigger>
-          <SelectContent>
-            {algorithms.map((algo) => (
-              <SelectItem key={algo.value} value={algo.value}>
-                {algo.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div>
-        <h3 className="text-lg font-semibold mb-3 text-gray-800">Drawing Mode</h3>
-        <div className="grid grid-cols-3 gap-2">
-          <Button
-            variant={drawingMode === "wall" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setDrawingMode("wall")}
-            className="flex items-center gap-2"
-          >
-            <MousePointer className="w-4 h-4" />
-            Walls
-          </Button>
-          <Button
-            variant={drawingMode === "start" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setDrawingMode("start")}
-            className="flex items-center gap-2"
-          >
-            <Navigation className="w-4 h-4" />
-            Start
-          </Button>
-          <Button
-            variant={drawingMode === "end" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setDrawingMode("end")}
-            className="flex items-center gap-2"
-          >
-            <Target className="w-4 h-4" />
-            End
-          </Button>
+    <div className="bg-gray-800 p-6 rounded-lg">
+      <div className="flex flex-wrap items-center gap-4">
+        {/* Algorithm Selection */}
+        <div className="flex items-center gap-2">
+          <label className="text-white font-medium">Algorithm:</label>
+          <Select value={selectedAlgorithm} onValueChange={(value) => setSelectedAlgorithm(value as any)}>
+            <SelectTrigger className="w-48 bg-gray-700 border-gray-600 text-white">
+              <SelectValue placeholder="Select algorithm" />
+            </SelectTrigger>
+            <SelectContent className="bg-gray-700 border-gray-600">
+              {algorithms.map((algo) => (
+                <SelectItem key={algo.value} value={algo.value} className="text-white hover:bg-gray-600">
+                  {algo.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-      </div>
 
-      <div>
-        <h3 className="text-lg font-semibold mb-3 text-gray-800">Animation Speed</h3>
-        <div className="space-y-2">
-          <Slider
-            value={[animationSpeed]}
-            onValueChange={(value) => setAnimationSpeed(value[0])}
-            max={100}
-            min={1}
-            step={1}
-            className="w-full"
-          />
-          <div className="flex justify-between text-sm text-gray-500">
-            <span>Slow</span>
-            <Badge variant="secondary">{animationSpeed}%</Badge>
-            <span>Fast</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-3">
+        {/* Visualize Button */}
         <Button
           onClick={visualizeAlgorithm}
           disabled={isVisualizing}
-          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-          size="lg"
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 font-medium"
         >
-          {isVisualizing ? (
-            <>
-              <Square className="w-4 h-4 mr-2" />
-              Visualizing...
-            </>
-          ) : (
-            <>
-              <Play className="w-4 h-4 mr-2" />
-              Visualize {algorithms.find((a) => a.value === selectedAlgorithm)?.label}
-            </>
-          )}
+          {isVisualizing
+            ? "Visualizing..."
+            : `Visualize ${algorithms.find((a) => a.value === selectedAlgorithm)?.label || "Algorithm"}!`}
         </Button>
 
-        <div className="grid grid-cols-2 gap-2">
-          <Button onClick={clearPath} variant="outline" size="sm" disabled={isVisualizing}>
-            <Trash2 className="w-4 h-4 mr-2" />
-            Clear Path
-          </Button>
-          <Button onClick={clearGrid} variant="outline" size="sm" disabled={isVisualizing}>
-            <Square className="w-4 h-4 mr-2" />
-            Clear Grid
-          </Button>
-        </div>
+        {/* Clear Board Button */}
+        <Button
+          onClick={clearGrid}
+          disabled={isVisualizing}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
+        >
+          Clear Board
+        </Button>
 
-        <Button onClick={generateMaze} variant="outline" className="w-full bg-transparent" disabled={isVisualizing}>
-          <Shuffle className="w-4 h-4 mr-2" />
+        {/* Clear Walls & Weights Button */}
+        <Button
+          onClick={clearWallsAndWeights} // Call the new function here
+          disabled={isVisualizing}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2"
+        >
+          Clear Walls & Weights
+        </Button>
+
+        {/* Generate Maze Button */}
+        <Button
+          onClick={generateMaze}
+          disabled={isVisualizing}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2"
+        >
           Generate Maze
         </Button>
+      </div>
+
+      {/* Instructions */}
+      <div className="mt-4 text-sm text-gray-400">
+        <p>
+          <strong>Instructions:</strong> Click and drag to draw walls. Click on the start (green) or finish (red) node
+          to move them.
+        </p>
       </div>
     </div>
   )

@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useGrid, type Cell as CellType } from "@/contexts/grid-context"
 import { cn } from "@/lib/utils"
 
@@ -12,57 +11,50 @@ interface CellProps {
 }
 
 export function Cell({ cell, row, col }: CellProps) {
-  const { updateCell, setStartPoint, setEndPoint, drawingMode, isVisualizing, startPoint, endPoint } = useGrid()
+  const { updateCell, setStartPoint, setEndPoint, drawingMode, isVisualizing } = useGrid()
 
   const handleClick = () => {
     if (isVisualizing) return
 
-    if (drawingMode === "start") {
-      if (cell.type !== "end") {
-        setStartPoint(row, col)
-      }
-    } else if (drawingMode === "end") {
-      if (cell.type !== "start") {
-        setEndPoint(row, col)
-      }
-    } else if (drawingMode === "wall") {
-      if (cell.type === "empty") {
-        updateCell(row, col, "wall")
-      } else if (cell.type === "wall") {
-        updateCell(row, col, "empty")
-      }
+    if (cell.type === "start" || cell.type === "end") {
+      // Allow moving start/end points
+      return
+    }
+
+    if (cell.type === "empty") {
+      updateCell(row, col, "wall")
+    } else if (cell.type === "wall") {
+      updateCell(row, col, "empty")
     }
   }
 
   const handleMouseEnter = (e: React.MouseEvent) => {
     if (isVisualizing) return
 
-    // Only draw walls when mouse is pressed and in wall mode
-    if (e.buttons === 1 && drawingMode === "wall") {
-      if (cell.type === "empty") {
-        updateCell(row, col, "wall")
-      }
+    // Draw walls when dragging
+    if (e.buttons === 1 && cell.type === "empty") {
+      updateCell(row, col, "wall")
     }
   }
 
   const getCellStyles = () => {
-    const baseStyles = "w-4 h-4 border border-gray-200 cursor-pointer transition-all duration-200 hover:scale-110"
+    const baseStyles = "w-5 h-5 border border-gray-700 cursor-pointer"
 
     switch (cell.type) {
       case "start":
-        return cn(baseStyles, "bg-green-500 border-green-600 shadow-lg")
+        return cn(baseStyles, "bg-green-500 border-green-400")
       case "end":
-        return cn(baseStyles, "bg-red-500 border-red-600 shadow-lg")
+        return cn(baseStyles, "bg-red-500 border-red-400")
       case "wall":
-        return cn(baseStyles, "bg-gray-800 border-gray-900")
+        return cn(baseStyles, "bg-gray-900 border-gray-800")
       case "visited":
-        return cn(baseStyles, "bg-blue-200 border-blue-300 animate-pulse", cell.isAnimated && "animate-bounce")
+        return cn(baseStyles, "bg-blue-400 border-blue-300", cell.isAnimated && "animate-pulse")
       case "path":
-        return cn(baseStyles, "bg-yellow-400 border-yellow-500 shadow-md animate-pulse")
+        return cn(baseStyles, "bg-yellow-400 border-yellow-300")
       case "current":
-        return cn(baseStyles, "bg-purple-400 border-purple-500 animate-ping")
+        return cn(baseStyles, "bg-purple-400 border-purple-300")
       default:
-        return cn(baseStyles, "bg-white hover:bg-gray-50")
+        return cn(baseStyles, "bg-white border-gray-300 hover:bg-gray-100")
     }
   }
 
@@ -71,7 +63,7 @@ export function Cell({ cell, row, col }: CellProps) {
       className={getCellStyles()}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
-      title={`Row: ${row}, Col: ${col} - ${cell.type}`}
+      onMouseDown={(e) => e.preventDefault()} // Prevent text selection
     />
   )
 }

@@ -1,8 +1,0 @@
-com/pathfinding/dto/PathfindingResponse.class
-com/pathfinding/service/PathfindingService.class
-com/pathfinding/model/Node.class
-com/pathfinding/dto/Coordinate.class
-com/pathfinding/controller/RootController.class
-com/pathfinding/PathfindingApplication.class
-com/pathfinding/dto/PathfindingRequest.class
-com/pathfinding/controller/PathfindingController.class

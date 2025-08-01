@@ -81,6 +81,20 @@ export function ControlPanel() {
         >
           Generate Maze
         </Button>
+        <div className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md">
+          {selectedAlgorithm === "dijkstra" && (
+            <p>Time Complexity: O(V<sup>2</sup>)</p>
+          )}
+          {selectedAlgorithm === "astar" && (
+            <p>Time Complexity: O(E)</p>
+          )}
+          {selectedAlgorithm === "bfs" && (
+            <p>Time Complexity: O(V + E) </p>
+          )}
+          {selectedAlgorithm === "dfs" && (
+            <p>Time Complexity: O(V + E)</p>
+          )}
+        </div>
       </div>
 
       {/* Instructions */}

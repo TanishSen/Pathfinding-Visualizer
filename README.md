@@ -2,7 +2,8 @@
 
 A modern, interactive web application that helps users visualize and understand how different pathfinding algorithms work on a grid. Built as an educational tool for students, developers, and algorithm enthusiasts.
 
-<img width="933" height="580" alt="Screenshot 2025-07-16 at 8 09 13 PM" src="https://github.com/user-attachments/assets/eae520ad-e4f1-4f99-8ff3-aed6fd22ae8b" />
+![Pathfinding](https://github.com/user-attachments/assets/5819cf8d-d814-43ba-b284-9586ea0b07aa)
+
 
 ## ✨ Features
 
@@ -13,7 +14,8 @@ A modern, interactive web application that helps users visualize and understand 
 - **Real-time grid manipulation** during algorithm setup
 
 ### 🔍 Algorithm Support
-<img width="634" height="207" alt="Screenshot 2025-07-16 at 8 14 39 PM" src="https://github.com/user-attachments/assets/426c6b8e-92e7-4ad1-9a0e-1e60255e5b70" />
+![PHOTO-2025-08-02-00-34-28](https://github.com/user-attachments/assets/931acb3a-8622-42ea-8ce8-b4d305bf31df)
+
 
 
 - **BFS (Breadth-First Search)** - Guarantees shortest path in unweighted graphs
@@ -56,34 +58,32 @@ A modern, interactive web application that helps users visualize and understand 
 - **Java** 17+ and Maven
 - **Git**
 
-### Frontend Setup
-
-\`\`\`bash
-# Clone the repository
+## Clone the repository
 git clone <repository-url>
 cd pathfinding-visualizer
 
-# Install dependencies
+## Frontend Setup
+bash
+
+### Install dependencies
 npm install
 
-# Start development server
+### Start development server
 npm run dev
-\`\`\`
 
 The frontend will be available at \`http://localhost:3000\`
 
-### Backend Setup
+## Backend Setup
+bash
 
-\`\`\`bash
-# Navigate to backend directory
+### Navigate to backend directory
 cd backend
 
-# Build the project
+### Build the project
 mvn clean install
 
-# Run the Spring Boot application
+### Run the Spring Boot application
 mvn spring-boot:run
-\`\`\`
 
 The backend API will be available at \`http://localhost:8080\`
 
@@ -94,23 +94,43 @@ The backend API will be available at \`http://localhost:8080\`
 Executes pathfinding algorithm and returns visited nodes and optimal path.
 
 **Request Body:**
-\`\`\`json
+
+json
+
 {
+
+
   "grid": [["empty", "wall", "empty"], ...],
+
+
   "start": {"row": 0, "col": 0},
+
+
   "end": {"row": 10, "col": 10},
+
+
   "algorithm": "bfs"
+
+
 }
-\`\`\`
+
 
 **Response:**
-\`\`\`json
+
+json
+
 {
+
   "visitedNodes": [{"row": 0, "col": 1}, ...],
+
+
   "path": [{"row": 0, "col": 0}, ...],
+
+
   "success": true
+  
 }
-\`\`\`
+
 
 ## 🧮 Algorithm Explanations
 
@@ -156,21 +176,9 @@ Executes pathfinding algorithm and returns visited nodes and optimal path.
 ## 🔧 Development
 
 ### Project Structure
-\`\`\`
-pathfinding-visualizer/
-├── app/                    # Next.js app directory
-├── components/             # React components
-│   ├── ui/                # shadcn/ui components
-│   ├── grid.tsx           # Main grid component
-│   ├── cell.tsx           # Individual cell component
-│   └── control-panel.tsx  # Algorithm controls
-├── contexts/              # React contexts
-│   └── grid-context.tsx   # Grid state management
-├── lib/                   # Utility functions
-└── backend/               # Java Spring Boot API
-    ├── src/main/java/
-    └── pom.xml
-\`\`\`
+
+<img width="423" height="269" alt="Screenshot 2025-08-02 at 12 48 46 AM" src="https://github.com/user-attachments/assets/4a200d58-17bb-4e9f-beb6-65117ff31af9" />
+
 
 ### Key Components
 - **GridProvider** - Manages global grid state and algorithm execution
@@ -178,23 +186,6 @@ pathfinding-visualizer/
 - **Cell** - Individual grid cell with click/hover interactions
 - **ControlPanel** - Algorithm selection and visualization controls
 - **AlgorithmInfo** - Real-time algorithm information and complexity details
-
-## 🚀 Deployment
-
-### Frontend (Vercel)
-\`\`\`bash
-# Deploy to Vercel
-npm run build
-vercel --prod
-\`\`\`
-
-### Backend (Railway/Render)
-\`\`\`bash
-# Build JAR file
-mvn clean package
-
-# Deploy JAR to your preferred platform
-\`\`\`
 
 ## 🤝 Contributing
 
@@ -204,34 +195,9 @@ mvn clean package
 4. Push to the branch (\`git push origin feature/amazing-feature\`)
 5. Open a Pull Request
 
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🙏 Acknowledgments
 
-<<<<<<< Updated upstream
 - Inspired by Clément Mihailescu's pathfinding visualizer
-- Built with modern web technologies for educational purposes
-- Special thanks to the open-source community
-=======
-- **Pathfinding algorithms** - Classic computer science algorithms
-- **shadcn/ui** - Beautiful and accessible UI components
-- **Tailwind CSS** - Utility-first CSS framework
-- **Spring Boot** - Java application framework
 
-## 📞 Support
 
-If you encounter any issues or have questions:
-1. Check the [Issues](../../issues) page
-2. Create a new issue with detailed description
-3. Join our community discussions
 
----
-
-**Built with ❤️ for education and learning**
-\`\`\`
-\`\`\`
-
-Now let me create the Java Spring Boot backend code:
->>>>>>> Stashed changes

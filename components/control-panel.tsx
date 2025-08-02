@@ -9,8 +9,6 @@ export function ControlPanel() {
     selectedAlgorithm,
     setSelectedAlgorithm,
     isVisualizing,
-    animationSpeed,
-    setAnimationSpeed,
     clearGrid,
     clearWallsAndWeights, // Use the new function here
     generateMaze,

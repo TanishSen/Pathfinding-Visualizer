@@ -358,7 +358,8 @@ export function GridProvider({ children }: { children: React.ReactNode }) {
 
       if (current.row === endPoint.row && current.col === endPoint.col) {
         // Reconstruct path
-        let pathNode = current
+        let pathNode = current;
+        
         while (pathNode) {
           path.unshift(pathNode)
           const parentKey = `${pathNode.row},${pathNode.col}`

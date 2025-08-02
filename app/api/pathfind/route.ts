@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Forward request to our Spring Boot backend
-    const response = await fetch("http://localhost:8082/api/pathfind", {
+    const response = await fetch("http://localhost:8080/api/pathfind", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

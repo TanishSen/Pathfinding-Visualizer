@@ -1,8 +1,1 @@
-{
-  "build": {
-    "command": "mvn clean package -DskipTests"
-  },
-  "start": {
-    "command": "java -jar target/*.jar"
-  }
-}
+web: java -jar target/*.jar
